@@ -1,0 +1,159 @@
+---
+title: "Exploratory analysis"
+output: github_document
+---
+
+```{r setup}
+library(tidyverse)
+```
+
+
+## Setting options
+
+```{r, include = FALSE}
+library(tidyverse)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "botton"))
+
+options(
+  ggplot2.continuous.color = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_color_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_color_viridis_d
+```
+
+## Do something simple
+
+```{r}
+x_vec = rnorm(30, mean = 5, sd = 3)  
+
+(x_vec - mean(x_vec))/sd(x_vec)
+
+```
+
+I want a function to compute z-scores
+
+```{r}
+z_scores = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("Input must be numeric")
+  }
+  
+  if (length(x) < 3) {
+    stop("Input must have at least three numbers")
+  }
+  
+  z = (x - mean(x)) / sd(x)
+  
+  return(z)
+  
+}
+
+z_scores(x_vec)
+```
+
+Try my function on some other things. These should give errors.
+
+```{r, error = TRUE}
+z_scores(3)
+z_scores("my name is jeff")
+z_scores(mtcars)
+z_scores(c(TRUE, TRUE, FALSE, TRUE))
+```
+
+## Multiple outputs
+```{r}
+mean_and_sd = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("Input must be numeric")
+  }
+  
+  if (length(x) < 3) {
+    stop("Input must have at least three numbers")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+  
+  tibble(
+    mean = mean_x,
+    sd = sd_x
+  )
+  
+}
+
+mean_and_sd(x_vec)
+```
+
+Check that the function works.
+
+```{r}
+mean_and_sd(x_vec)
+```
+
+## Multiple inputs
+
+I'd like to do this with function
+```{r}
+sim_data = 
+  tibble(
+    x = rnorm(100, mean = 4, sd = 3)
+  )
+
+sim_data %>% 
+  summarize(
+    mean = mean(x),
+    sd = sd(x)
+  )
+```
+
+```{r}
+sim_mean_sd = function(samp_size, mu = 0, sigma = 1){
+  
+  sim_data = 
+    tibble(
+      x = rnorm(n = samp_size, mean = mu, sd = sigma)
+  )
+
+sim_data %>% 
+  summarize(
+    mean = mean(x),
+    sd = sd(x)
+    )
+
+}
+
+sim_mean_sd(samp_size = 100, mu = 6, sigma = 3)
+sim_mean_sd(mu = 6, samp_size = 100, sigma = 3)
+sim_mean_sd(samp_size = 100)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
